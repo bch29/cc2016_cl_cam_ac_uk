@@ -296,7 +296,15 @@ let do_unary = function
   | (READ, STACK_UNIT)   -> STACK_INT (readint())
   | (op, _) -> Errors.complain ("do_unary: malformed unary operator: " ^ (string_of_unary_oper op))
 
-let do_oper = function 
+let rec xdy x y =
+  if x < 0 || y < 1 then
+    Errors.complain "in 'x d y', x must be non-negative and y must be positive"
+  else
+    match x, y with
+    | 0, _ -> 0
+    | n, m -> Random.int m + xdy (n - 1) m
+
+let do_oper = function
   | (AND,  STACK_BOOL m,  STACK_BOOL n) -> STACK_BOOL (m && n)
   | (OR,   STACK_BOOL m,  STACK_BOOL n) -> STACK_BOOL (m || n)
   | (EQB,  STACK_BOOL m,  STACK_BOOL n) -> STACK_BOOL (m = n)
@@ -305,6 +313,7 @@ let do_oper = function
   | (ADD,  STACK_INT m,   STACK_INT n)  -> STACK_INT (m + n)
   | (SUB,  STACK_INT m,   STACK_INT n)  -> STACK_INT (m - n)
   | (MUL,  STACK_INT m,   STACK_INT n)  -> STACK_INT (m * n)
+  | (DOP,  STACK_INT m,   STACK_INT n)  -> STACK_INT (xdy m n)
   | (op, _, _)  -> Errors.complain ("do_oper: malformed binary operator: " ^ (string_of_oper op))
 
 

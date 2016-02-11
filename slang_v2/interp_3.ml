@@ -211,6 +211,14 @@ let do_unary = function
   | (READ, UNIT)   -> INT (readint())
   | (op, _) -> complain ("malformed unary operator: " ^ (string_of_unary_oper op))
 
+let rec xdy x y =
+  if x < 0 || y < 1 then
+    complain "in 'x d y', x must be non-negative and y must be positive"
+  else
+    match x, y with
+    | 0, _ -> 0
+    | n, m -> Random.int m + xdy (n - 1) m
+
 let do_oper = function 
   | (AND,  BOOL m,  BOOL n) -> BOOL (m && n)
   | (OR,   BOOL m,  BOOL n) -> BOOL (m || n)
@@ -220,6 +228,7 @@ let do_oper = function
   | (ADD,  INT m,   INT n)  -> INT (m + n)
   | (SUB,  INT m,   INT n)  -> INT (m - n)
   | (MUL,  INT m,   INT n)  -> INT (m * n)
+  | (DOP,  INT m,   INT n)  -> INT (xdy m n)
   | (op, _, _)  -> complain ("malformed binary operator: " ^ (string_of_oper op))
 
 

@@ -23,6 +23,7 @@ rule token = parse
   | "," { COMMA }
   | ":" { COLON }
   | ";" { SEMICOLON }
+  | "d" { DOP }
   | "+" { ADD }
   | "-" { SUB }
   | "*" { MUL }
